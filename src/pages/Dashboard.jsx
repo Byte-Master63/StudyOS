@@ -12,6 +12,7 @@ export default function Dashboard() {
   const {
     tasks,
     assessments,
+    studySessions,
     toggleTask,
     updateMark,
     updateDueDate,
