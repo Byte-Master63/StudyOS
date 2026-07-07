@@ -26,25 +26,39 @@ export default function Analytics() {
 
   return (
     <section>
-      <h1>Analytics</h1>
+      <h1 className="text-2xl font-display text-ink mb-6">Analytics</h1>
 
-      <Card title="Overall">
-        <p>Task completion: {completedTasks} / {totalTasks} ({taskCompletionRate}%)</p>
-        <p>
-          Assessments completed: {completedAssessments} / {totalAssessments}
-        </p>
-        <p>
-          Overall average mark:{" "}
-          {overallAverage !== null ? `${overallAverage}%` : "No marks yet"}
-        </p>
-      </Card>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+        <Card accentColor="border-moss">
+          <p className="text-xs font-mono text-slate uppercase mb-1">Task Completion</p>
+          <p className="text-3xl font-display text-ink">{taskCompletionRate}%</p>
+          <p className="text-xs text-slate mt-1">{completedTasks} of {totalTasks} tasks</p>
+        </Card>
+        <Card accentColor="border-stamp">
+          <p className="text-xs font-mono text-slate uppercase mb-1">Assessments Done</p>
+          <p className="text-3xl font-display text-ink">
+            {completedAssessments}/{totalAssessments}
+          </p>
+        </Card>
+        <Card accentColor="border-mustard">
+          <p className="text-xs font-mono text-slate uppercase mb-1">Overall Average</p>
+          <p className="text-3xl font-display text-ink">
+            {overallAverage !== null ? `${overallAverage}%` : "—"}
+          </p>
+        </Card>
+      </div>
 
-      <Card title="By Module">
-        <ul>
+      <Card title="By Module" accentColor="border-ink">
+        <ul className="space-y-2">
           {moduleStats.map((m) => (
-            <li key={m.module}>
-              {m.module}: {m.completed}/{m.total} done,{" "}
-              {m.averageMark !== null ? `avg ${m.averageMark}%` : "no marks yet"}
+            <li key={m.module} className="flex items-center gap-3 text-sm">
+              <span className="stamp-badge">{m.module}</span>
+              <span className="text-ink/80">
+                {m.completed}/{m.total} done
+              </span>
+              <span className="font-mono text-xs text-moss ml-auto">
+                {m.averageMark !== null ? `${m.averageMark}%` : "no marks yet"}
+              </span>
             </li>
           ))}
         </ul>
