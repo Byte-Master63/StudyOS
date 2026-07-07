@@ -5,6 +5,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Layout from "./components/layout/Layout";
 import Dashboard from "./pages/Dashboard";
 import Calendar from "./pages/Calendar";
+import AssignmentTracker from "./pages/AssignmentTracker";
 import Modules from "./pages/Modules";
 import Analytics from "./pages/Analytics";
 import Focus from "./pages/Focus";
@@ -17,6 +18,7 @@ const router = createBrowserRouter([
     children: [
       { index: true, element: <Dashboard /> },
       { path: "calendar", element: <Calendar /> },
+      { path: "assignments", element: <AssignmentTracker /> },
       { path: "modules", element: <Modules /> },
       { path: "analytics", element: <Analytics /> },
       { path: "focus", element: <Focus /> },
