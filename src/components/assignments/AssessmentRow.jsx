@@ -21,19 +21,27 @@ export default function AssessmentRow({
     if (Number.isNaN(value)) {
       value = null;
     } else {
-      value = Math.min(100, Math.max(0, value)); // clamp between 0 and 100
+      value = Math.min(100, Math.max(0, value));
     }
     setMarkInput(value ?? "");
     onUpdateMark(assessment.id, value);
   }
 
   return (
-    <li>
-      <strong>{assessment.module}</strong> — {assessment.type} #{assessment.number}{" "}
+    <li
+      className={`flex flex-wrap items-center gap-3 py-2 border-b border-slate/10 last:border-0 ${
+        assessment.status === "cancelled" ? "opacity-40" : ""
+      }`}
+    >
+      <span className="stamp-badge">{assessment.module}</span>
+      <span className="text-sm text-ink/80 flex-1 min-w-[120px]">
+        {assessment.type} #{assessment.number}
+      </span>
       <input
         type="date"
         value={assessment.dueDate}
         onChange={(e) => onUpdateDueDate(assessment.id, e.target.value)}
+        className="font-mono text-xs border border-slate/30 rounded px-2 py-1 bg-paper text-ink"
       />
       <input
         type="number"
@@ -44,15 +52,16 @@ export default function AssessmentRow({
         onChange={(e) => setMarkInput(e.target.value)}
         onBlur={commitMark}
         onKeyDown={(e) => {
-          if (e.key === "Enter") {
-            e.target.blur();
-          }
+          if (e.key === "Enter") e.target.blur();
         }}
+        className="font-mono text-xs border border-slate/30 rounded px-2 py-1 w-16 bg-paper text-ink"
       />
-      <button onClick={() => onToggleCancelled(assessment.id)}>
+      <button
+        onClick={() => onToggleCancelled(assessment.id)}
+        className="text-xs font-mono text-stamp hover:underline"
+      >
         {assessment.status === "cancelled" ? "Restore" : "Cancel"}
       </button>
-      {assessment.status === "cancelled" && <em> (cancelled)</em>}
     </li>
   );
 }

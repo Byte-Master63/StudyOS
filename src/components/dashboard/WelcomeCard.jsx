@@ -1,11 +1,14 @@
 import Card from "../ui/Card";
 
 export default function WelcomeCard() {
-  const studentName = "Student"; // placeholder until auth/user context exists
+  const studentName = "Student";
 
   return (
-    <Card title="Welcome">
-      <p>Welcome back, {studentName}. Let's make today productive.</p>
+    <Card title="Welcome" accentColor="border-ink">
+      <p className="text-ink/80">
+        Welcome back, <span className="font-medium text-ink">{studentName}</span>.
+        Let's make today productive.
+      </p>
     </Card>
   );
 }
