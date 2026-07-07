@@ -1,3 +1,4 @@
+// src/pages/AssignmentTracker.jsx
 import { useState } from "react";
 import { useOutletContext } from "react-router-dom";
 import Card from "../components/ui/Card";
@@ -17,36 +18,40 @@ export default function AssignmentTracker() {
   }
 
   const filtered = assessments.filter(matchesFilter);
-
   const grouped = filtered.reduce((acc, a) => {
     if (!acc[a.module]) acc[a.module] = [];
     acc[a.module].push(a);
     return acc;
   }, {});
-
   const modules = Object.keys(grouped).sort();
+
+  const filters = ["all", "upcoming", "completed", "cancelled"];
 
   return (
     <section>
-      <h1>Assignment Tracker</h1>
+      <h1 className="text-2xl font-display text-ink mb-6">Assignment Tracker</h1>
 
-      <div>
-        <label>
-          Filter:{" "}
-          <select value={filter} onChange={(e) => setFilter(e.target.value)}>
-            <option value="all">All</option>
-            <option value="upcoming">Upcoming</option>
-            <option value="completed">Completed</option>
-            <option value="cancelled">Cancelled</option>
-          </select>
-        </label>
+      <div className="flex gap-2 mb-6">
+        {filters.map((f) => (
+          <button
+            key={f}
+            onClick={() => setFilter(f)}
+            className={`font-mono text-xs px-3 py-1.5 rounded-full border transition-colors capitalize ${
+              filter === f
+                ? "bg-ink text-paper border-ink"
+                : "border-ink/20 text-ink/70 hover:border-ink/50"
+            }`}
+          >
+            {f}
+          </button>
+        ))}
       </div>
 
       {modules.length === 0 ? (
-        <p>No assessments match this filter.</p>
+        <p className="text-slate text-sm">No assessments match this filter.</p>
       ) : (
         modules.map((module) => (
-          <Card key={module} title={module}>
+          <Card key={module} title={module} accentColor="border-ink">
             <ul>
               {grouped[module]
                 .sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate))
