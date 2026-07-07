@@ -1,14 +1,19 @@
-// src/components/dashboard/TasksCard.jsx
 import Card from "../ui/Card";
-import { tasks } from "../../data/tasks";
 
-export default function TasksCard() {
+export default function TasksCard({ tasks, onToggleTask }) {
   return (
     <Card title="Tasks">
       <ul>
         {tasks.map((task) => (
           <li key={task.id}>
-            {task.done ? "✅" : "⬜"} {task.title}
+            <label>
+              <input
+                type="checkbox"
+                checked={task.done}
+                onChange={() => onToggleTask(task.id)}
+              />
+              {task.title}
+            </label>
           </li>
         ))}
       </ul>
