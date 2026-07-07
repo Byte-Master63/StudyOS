@@ -32,7 +32,7 @@ export default function Dashboard() {
       <ProgressCard tasks={tasks} />
       <QuoteCard />
       <CalendarCard assessments={assessments} />
-      <StudyHoursCard />
+      <StudyHoursCard studySessions={studySessions} />
     </section>
   );
 }
