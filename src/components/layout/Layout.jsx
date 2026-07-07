@@ -57,7 +57,7 @@ export default function Layout() {
     ]);
   }
 
-  return (
+    return (
     <div>
       <Sidebar />
       <main>
