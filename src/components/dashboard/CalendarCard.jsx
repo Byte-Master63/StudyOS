@@ -1,5 +1,5 @@
 import Card from "../ui/Card";
-import { generateMonthGrid } from "../../utils/calendarUtils";
+import { generateMonthGrid, getDueDaysInMonth } from "../../utils/calendarUtils";
 
 const monthNames = [
   "January", "February", "March", "April", "May", "June",
@@ -11,16 +11,7 @@ export default function CalendarCard({ assessments }) {
   const year = today.getFullYear();
   const month = today.getMonth();
   const grid = generateMonthGrid(year, month);
-
-  const dueDaysThisMonth = new Set(
-    assessments
-      .filter((a) => a.status !== "cancelled")
-      .filter((a) => {
-        const d = new Date(a.dueDate);
-        return d.getFullYear() === year && d.getMonth() === month;
-      })
-      .map((a) => new Date(a.dueDate).getDate())
-  );
+  const dueDaysThisMonth = getDueDaysInMonth(assessments, year, month);
 
   return (
     <Card title={`Calendar — ${monthNames[month]} ${year}`}>
