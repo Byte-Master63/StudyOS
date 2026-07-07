@@ -1,7 +1,7 @@
 import Card from "../ui/Card";
 
 export default function WelcomeCard() {
-  const studentName = "Student";
+  const studentName = "Mr TE Tshabalala";
 
   return (
     <Card title="Welcome" accentColor="border-ink">
