@@ -15,13 +15,18 @@ export default function Settings() {
 
   return (
     <section>
-      <h1>Settings</h1>
-      <Card title="Data">
-        <p>
+      <h1 className="text-2xl font-display text-ink mb-6">Settings</h1>
+      <Card title="Data" accentColor="border-stamp">
+        <p className="text-sm text-ink/80 mb-4">
           StudyOS currently stores your data locally in this browser only —
           it does not sync between devices yet.
         </p>
-        <button onClick={handleResetAllData}>Reset All Data</button>
+        <button
+          onClick={handleResetAllData}
+          className="font-mono text-sm px-4 py-2 rounded bg-stamp text-paper hover:opacity-90 transition-opacity"
+        >
+          Reset All Data
+        </button>
       </Card>
     </section>
   );
