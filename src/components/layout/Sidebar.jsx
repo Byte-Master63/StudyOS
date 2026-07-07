@@ -1,10 +1,10 @@
-// src/components/layout/Sidebar.jsx
 import { NavLink } from "react-router-dom";
 
 function Sidebar() {
   const menuItems = [
     { label: "Dashboard", path: "/" },
     { label: "Calendar", path: "/calendar" },
+    { label: "Assignment Tracker", path: "/assignments" },
     { label: "Modules", path: "/modules" },
     { label: "Analytics", path: "/analytics" },
     { label: "Focus", path: "/focus" },
