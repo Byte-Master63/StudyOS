@@ -37,23 +37,36 @@ export default function Focus() {
     setSecondsElapsed(0);
   }
 
-  const displayMinutes = Math.floor(secondsElapsed / 60)
-    .toString()
-    .padStart(2, "0");
+  const displayMinutes = Math.floor(secondsElapsed / 60).toString().padStart(2, "0");
   const displaySeconds = (secondsElapsed % 60).toString().padStart(2, "0");
 
   return (
     <section>
-      <h1>Focus Timer</h1>
-      <Card title="Current Session">
-        <p style={{ fontSize: "2rem" }}>
+      <h1 className="text-2xl font-display text-ink mb-6">Focus Timer</h1>
+      <Card accentColor="border-moss">
+        <p className="font-mono text-6xl text-ink text-center py-6 tracking-tight">
           {displayMinutes}:{displaySeconds}
         </p>
-        <button onClick={handleStartPause}>
-          {isRunning ? "Pause" : "Start"}
-        </button>
-        <button onClick={handleStopAndLog}>Stop & Log</button>
-        <button onClick={handleReset}>Reset</button>
+        <div className="flex justify-center gap-3">
+          <button
+            onClick={handleStartPause}
+            className="font-mono text-sm px-5 py-2 rounded bg-moss text-paper hover:opacity-90 transition-opacity"
+          >
+            {isRunning ? "Pause" : "Start"}
+          </button>
+          <button
+            onClick={handleStopAndLog}
+            className="font-mono text-sm px-5 py-2 rounded bg-stamp text-paper hover:opacity-90 transition-opacity"
+          >
+            Stop & Log
+          </button>
+          <button
+            onClick={handleReset}
+            className="font-mono text-sm px-5 py-2 rounded border border-ink/20 text-ink hover:bg-ink/5 transition-colors"
+          >
+            Reset
+          </button>
+        </div>
       </Card>
     </section>
   );
