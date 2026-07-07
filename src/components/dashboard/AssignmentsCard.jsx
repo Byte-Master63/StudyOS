@@ -8,7 +8,6 @@ export default function AssignmentsCard({
   onToggleCancelled,
 }) {
   const today = new Date();
-
   const upcoming = assessments
     .filter((a) => a.status !== "cancelled" && a.mark === null)
     .filter((a) => new Date(a.dueDate) >= today)
@@ -16,18 +15,22 @@ export default function AssignmentsCard({
     .slice(0, 5);
 
   return (
-    <Card title="Upcoming Assignments">
-      <ul>
-        {upcoming.map((a) => (
-          <AssessmentRow
-            key={a.id}
-            assessment={a}
-            onUpdateMark={onUpdateMark}
-            onUpdateDueDate={onUpdateDueDate}
-            onToggleCancelled={onToggleCancelled}
-          />
-        ))}
-      </ul>
+    <Card title="Upcoming Assignments" accentColor="border-stamp">
+      {upcoming.length === 0 ? (
+        <p className="text-slate text-sm">Nothing due soon.</p>
+      ) : (
+        <ul>
+          {upcoming.map((a) => (
+            <AssessmentRow
+              key={a.id}
+              assessment={a}
+              onUpdateMark={onUpdateMark}
+              onUpdateDueDate={onUpdateDueDate}
+              onToggleCancelled={onToggleCancelled}
+            />
+          ))}
+        </ul>
+      )}
     </Card>
   );
 }
