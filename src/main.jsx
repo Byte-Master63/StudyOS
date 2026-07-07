@@ -3,6 +3,7 @@ import ReactDOM from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
 import Layout from "./components/layout/Layout";
+import ErrorFallback from "./components/ErrorFallback";
 import Dashboard from "./pages/Dashboard";
 import Calendar from "./pages/Calendar";
 import AssignmentTracker from "./pages/AssignmentTracker";
@@ -15,6 +16,7 @@ const router = createBrowserRouter([
   {
     path: "/",
     element: <Layout />,
+    errorElement: <ErrorFallback />,
     children: [
       { index: true, element: <Dashboard /> },
       { path: "calendar", element: <Calendar /> },
