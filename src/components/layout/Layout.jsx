@@ -58,9 +58,9 @@ export default function Layout() {
   }
 
     return (
-    <div>
+    <div className="flex min-h-screen bg-paper">
       <Sidebar />
-      <main>
+      <main className="flex-1 px-8 py-8">
         <Outlet
           context={{
             tasks,
