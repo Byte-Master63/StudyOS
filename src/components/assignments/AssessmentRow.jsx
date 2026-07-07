@@ -8,13 +8,22 @@ export default function AssessmentRow({
 }) {
   const [markInput, setMarkInput] = useState(assessment.mark ?? "");
 
-  // Keep local input in sync if the underlying data changes elsewhere (e.g. Reset All Data)
   useEffect(() => {
     setMarkInput(assessment.mark ?? "");
   }, [assessment.mark]);
 
   function commitMark() {
-    const value = markInput === "" ? null : Number(markInput);
+    if (markInput === "") {
+      onUpdateMark(assessment.id, null);
+      return;
+    }
+    let value = Number(markInput);
+    if (Number.isNaN(value)) {
+      value = null;
+    } else {
+      value = Math.min(100, Math.max(0, value)); // clamp between 0 and 100
+    }
+    setMarkInput(value ?? "");
     onUpdateMark(assessment.id, value);
   }
 
@@ -28,13 +37,15 @@ export default function AssessmentRow({
       />
       <input
         type="number"
+        min="0"
+        max="100"
         placeholder="mark"
         value={markInput}
         onChange={(e) => setMarkInput(e.target.value)}
         onBlur={commitMark}
         onKeyDown={(e) => {
           if (e.key === "Enter") {
-            e.target.blur(); // triggers commitMark via onBlur
+            e.target.blur();
           }
         }}
       />
