@@ -1,6 +1,18 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+/* src/index.css */
+@import "tailwindcss";
+
+@theme {
+  --color-paper: #EFF1EC;
+  --color-ink: #1B2A4A;
+  --color-stamp: #A23B2E;
+  --color-moss: #3F6C51;
+  --color-mustard: #E8C468;
+  --color-slate: #6B7280;
+
+  --font-display: "Space Grotesk", sans-serif;
+  --font-body: "Source Serif 4", serif;
+  --font-mono: "IBM Plex Mono", monospace;
+}
 
 body {
   @apply bg-paper text-ink font-body;
