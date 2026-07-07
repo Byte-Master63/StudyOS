@@ -21,18 +21,22 @@ export default function Dashboard() {
 
   return (
     <section>
-      <WelcomeCard />
-      <TasksCard tasks={tasks} onToggleTask={toggleTask} />
-      <AssignmentsCard
-        assessments={assessments}
-        onUpdateMark={updateMark}
-        onUpdateDueDate={updateDueDate}
-        onToggleCancelled={toggleCancelled}
-      />
-      <ProgressCard tasks={tasks} />
-      <QuoteCard />
-      <CalendarCard assessments={assessments} />
-      <StudyHoursCard studySessions={studySessions} />
+      <div className="mb-6">
+        <WelcomeCard />
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <TasksCard tasks={tasks} onToggleTask={toggleTask} />
+        <AssignmentsCard
+          assessments={assessments}
+          onUpdateMark={updateMark}
+          onUpdateDueDate={updateDueDate}
+          onToggleCancelled={toggleCancelled}
+        />
+        <ProgressCard tasks={tasks} />
+        <QuoteCard />
+        <CalendarCard assessments={assessments} />
+        <StudyHoursCard studySessions={studySessions} />
+      </div>
     </section>
   );
 }
