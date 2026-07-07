@@ -12,14 +12,15 @@ export default function CalendarCard({ assessments }) {
   const month = today.getMonth();
   const grid = generateMonthGrid(year, month);
   const dueDaysThisMonth = getDueDaysInMonth(assessments, year, month);
+  const todayDate = today.getDate();
 
   return (
-    <Card title={`Calendar — ${monthNames[month]} ${year}`}>
-      <table>
+    <Card title={`Calendar — ${monthNames[month]} ${year}`} accentColor="border-ink">
+      <table className="w-full text-center text-xs font-mono border-collapse">
         <thead>
-          <tr>
-            {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((d) => (
-              <th key={d}>{d}</th>
+          <tr className="text-slate">
+            {["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"].map((d) => (
+              <th key={d} className="pb-2 font-normal">{d}</th>
             ))}
           </tr>
         </thead>
@@ -27,15 +28,31 @@ export default function CalendarCard({ assessments }) {
           {grid.map((week, i) => (
             <tr key={i}>
               {week.map((day, j) => (
-                <td key={j}>
-                  {day && dueDaysThisMonth.has(day) ? <strong>{day}*</strong> : day ?? ""}
+                <td key={j} className="py-1">
+                  {day ? (
+                    <span
+                      className={`inline-flex items-center justify-center w-6 h-6 rounded-full ${
+                        day === todayDate
+                          ? "bg-ink text-paper"
+                          : dueDaysThisMonth.has(day)
+                          ? "bg-stamp/10 text-stamp font-semibold"
+                          : "text-ink/70"
+                      }`}
+                    >
+                      {day}
+                    </span>
+                  ) : (
+                    ""
+                  )}
                 </td>
               ))}
             </tr>
           ))}
         </tbody>
       </table>
-      <p><small>* = assessment due</small></p>
+      <p className="text-xs text-slate mt-2">
+        <span className="text-stamp font-semibold">●</span> assessment due
+      </p>
     </Card>
   );
 }

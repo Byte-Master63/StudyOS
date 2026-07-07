@@ -6,8 +6,11 @@ export default function StudyHoursCard({ studySessions }) {
   const minutes = totalMinutes % 60;
 
   return (
-    <Card title="Study Hours">
-      <p>{hours}h {minutes}m logged</p>
+    <Card title="Study Hours" accentColor="border-moss">
+      <p className="font-mono text-2xl text-ink">
+        {hours}h {minutes}m
+      </p>
+      <p className="text-xs text-slate mt-1">logged so far</p>
     </Card>
   );
 }
