@@ -1,6 +1,6 @@
 import { NavLink } from "react-router-dom";
 
-function Sidebar() {
+function Sidebar({ user, onLogout }) {
   const menuItems = [
     { label: "Dashboard", path: "/" },
     { label: "Calendar", path: "/calendar" },
@@ -15,6 +15,9 @@ function Sidebar() {
     <aside className="w-56 min-h-screen bg-ink text-paper flex flex-col shrink-0">
       <header className="px-5 py-6 border-b border-paper/10">
         <h2 className="font-display text-xl tracking-tight">StudyOS</h2>
+        {user && (
+          <p className="text-xs font-mono text-paper/60 mt-1">{user.username}</p>
+        )}
       </header>
       <nav className="flex-1 py-4">
         <ul>
@@ -37,6 +40,12 @@ function Sidebar() {
           ))}
         </ul>
       </nav>
+      <button
+        onClick={onLogout}
+        className="mx-5 mb-6 font-mono text-xs text-paper/60 hover:text-paper text-left"
+      >
+        Log out
+      </button>
     </aside>
   );
 }
