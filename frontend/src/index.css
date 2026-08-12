@@ -1,0 +1,91 @@
+/* src/index.css */
+@import "tailwindcss";
+
+@theme {
+  --color-paper: #F7F7FF;
+  --color-ink: #18264F;
+  --color-stamp: #EA4A78;
+  --color-moss: #127C70;
+  --color-mustard: #FFC94A;
+  --color-slate: #6B7280;
+
+  --font-display: "Space Grotesk", sans-serif;
+  --font-body: "Source Serif 4", serif;
+  --font-mono: "IBM Plex Mono", monospace;
+}
+
+body {
+  @apply bg-paper text-ink font-body;
+  background-image: radial-gradient(circle at 7% 8%, rgba(63, 196, 221, .18), transparent 24rem), radial-gradient(circle at 92% 4%, rgba(255, 91, 150, .15), transparent 27rem), radial-gradient(circle at 70% 90%, rgba(255, 201, 74, .14), transparent 24rem);
+  margin: 0;
+}
+
+h1, h2, h3 {
+  @apply font-display;
+}
+
+.stamp-badge {
+  @apply inline-block font-mono text-xs uppercase tracking-wide
+    border border-dashed border-stamp text-stamp
+    px-2 py-0.5 rounded-sm -rotate-2;
+}
+
+.saas-card {
+  position: relative;
+  overflow: hidden;
+  border-radius: 20px;
+  box-shadow: 0 10px 26px rgba(27, 42, 74, 0.08);
+  transition: transform 260ms cubic-bezier(.2,.8,.2,1), box-shadow 260ms ease, background 260ms ease;
+  animation: card-in 420ms ease both;
+}
+
+.saas-card::before {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  z-index: -1;
+  opacity: 0;
+  background: linear-gradient(120deg, rgba(139, 92, 246, .28), rgba(236, 72, 153, .22), rgba(34, 211, 238, .25));
+  filter: blur(16px);
+  transition: opacity 260ms ease;
+}
+
+.saas-card:hover {
+  transform: translateY(-6px) scale(1.02);
+  box-shadow: 0 24px 48px rgba(76, 29, 149, .18), 0 8px 18px rgba(236, 72, 153, .1);
+  background: linear-gradient(135deg, rgba(255,255,255,.98), rgba(250,245,255,.92));
+}
+
+.saas-card:hover::before { opacity: 1; }
+
+.student-card { backdrop-filter: blur(14px); }
+.metric-tile { @apply rounded-2xl bg-gradient-to-br from-violet-50 to-cyan-50 px-3 py-3; }
+.metric-tile span { @apply block text-[10px] font-mono uppercase tracking-wider text-slate; }
+.metric-tile strong { @apply mt-1 block font-display text-xl text-violet-800; }
+.timer-orb { width: min(18rem, 72vw); aspect-ratio: 1; margin: .5rem auto 1.5rem; border-radius: 9999px; padding: 12px; background: conic-gradient(#8b5cf6 0deg var(--timer-progress), #e9d5ff var(--timer-progress) 360deg); box-shadow: 0 18px 42px rgba(109, 40, 217, .2); }
+.timer-core { @apply h-full w-full rounded-full bg-white flex flex-col items-center justify-center; box-shadow: inset 0 0 0 8px #f5f3ff; }
+.welcome-hero { @apply rounded-2xl bg-gradient-to-br from-violet-100 via-fuchsia-50 to-cyan-50 p-5 md:flex md:items-center md:justify-between; }
+.hero-stat { @apply rounded-2xl bg-white/85 p-3 text-center shadow-sm; }
+.hero-stat b { @apply block font-display text-xl text-violet-800; }
+.hero-stat span { @apply block mt-1 text-[10px] font-mono uppercase tracking-wide text-slate; }
+.signup-card { background-image: radial-gradient(circle at top right, rgba(217, 70, 239, .12), transparent 18rem); }
+.deadline-alert { @apply rounded-full bg-rose-100 px-2.5 py-1 text-[10px] font-mono font-bold uppercase tracking-wide text-rose-700 ring-1 ring-rose-200; animation: pulse-alert 1.8s ease-in-out infinite; }
+@keyframes pulse-alert { 50% { box-shadow: 0 0 0 5px rgba(244, 63, 94, .1); } }
+
+@keyframes card-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .saas-card { animation: none; transition: none; }
+  .saas-card:hover { transform: none; }
+}
+
+.input {
+  @apply border border-slate/30 rounded-lg px-3 py-2 bg-paper text-ink focus:outline-none focus:ring-2 focus:ring-violet-400 focus:border-violet-400;
+}
+
+.button {
+  @apply font-mono text-sm px-3 py-1 border border-ink/20 rounded hover:bg-ink hover:text-paper transition-colors;
+}

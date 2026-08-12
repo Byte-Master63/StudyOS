@@ -13,7 +13,7 @@ A personal productivity dashboard built for managing UNISA coursework — tracki
 
 ## Overview
 
-StudyOS is a full-stack front-end productivity tool designed around a real academic workload — eight concurrent university modules, each with their own formative assessments, due dates, and marks. Rather than juggling a spreadsheet and a calendar app separately, StudyOS pulls everything into a single dashboard with live-updating stats, a real assessment calendar, and a built-in focus timer.
+StudyOS is a productivity dashboard designed around a real academic workload — eight concurrent university modules, each with their own formative assessments, due dates, and marks. Rather than juggling a spreadsheet and a calendar app separately, StudyOS pulls everything into a single dashboard with live-updating stats, a real assessment calendar, and a built-in focus timer.
 
 It's built as a single-page application with client-side persistence — no backend required, no accounts, no sync between devices (yet). Everything you edit is saved locally in your browser.
 
@@ -37,7 +37,18 @@ All editable data (task completion, marks, due dates, cancellations, study sessi
 - **Tailwind CSS v4** — utility-first styling via the `@tailwindcss/vite` plugin and CSS-based `@theme` tokens
 - **localStorage** — client-side persistence, no backend
 
-## Architecture
+## Repository layout
+
+```
+frontend/          # Vite + React client
+backend/supabase/  # Supabase database migrations
+docs/              # Development and release documentation
+```
+
+The frontend is independently installable. The Supabase directory owns
+database schema changes; it is not a standalone application server.
+
+## Frontend architecture
 
 ```
 App
@@ -58,7 +69,7 @@ State is lifted into `Layout.jsx` and shared with every routed page through Reac
 ### Folder structure
 
 ```
-src/
+frontend/src/
 ├── components/
 │   ├── layout/       # Layout, Sidebar
 │   ├── ui/            # Card (generic, reusable)
@@ -91,7 +102,7 @@ Typography: `Space Grotesk` (display), `Source Serif 4` (body), `IBM Plex Mono` 
 ```bash
 # Clone the repo
 git clone https://github.com/Byte-Master63/StudyOS.git
-cd StudyOS
+cd StudyOS/frontend
 
 # Install dependencies
 npm install
