@@ -3,7 +3,7 @@ import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
 export default function Login() {
-  const { login, loading, error } = useAuth();
+  const { login, loginWithGoogle, loading, error } = useAuth();
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -11,11 +11,16 @@ export default function Login() {
   async function handleSubmit(e) {
     e.preventDefault();
     try {
-      await login({ email, password });
+      const { session } = await login({ email, password });
+      if (session) navigate("/");
       navigate("/");
     } catch {
       // error already captured in context
     }
+  }
+
+  async function handleGoogleSignIn() {
+    try { await loginWithGoogle(); } catch { /* Context exposes the error. */ }
   }
 
   return (
@@ -52,6 +57,10 @@ export default function Login() {
           className="w-full bg-ink text-paper font-mono text-sm py-2 rounded hover:opacity-90 transition-opacity disabled:opacity-50"
         >
           {loading ? "Logging in..." : "Log In"}
+        </button>
+
+        <button type="button" onClick={handleGoogleSignIn} disabled={loading} className="w-full mt-3 border border-ink/20 text-ink font-mono text-sm py-2 rounded hover:bg-ink/5 disabled:opacity-50">
+          Continue with Google
         </button>
 
         <p className="text-sm text-slate mt-4 text-center">

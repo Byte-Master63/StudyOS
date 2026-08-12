@@ -5,8 +5,10 @@ import Card from "../components/ui/Card";
 export default function Focus() {
   const { addStudySession } = useOutletContext();
   const [secondsElapsed, setSecondsElapsed] = useState(0);
+  const [focusLength, setFocusLength] = useState(25);
   const [isRunning, setIsRunning] = useState(false);
   const intervalRef = useRef(null);
+  const previousRunning = useRef(false);
 
   useEffect(() => {
     if (isRunning) {
@@ -18,6 +20,23 @@ export default function Focus() {
     }
     return () => clearInterval(intervalRef.current);
   }, [isRunning]);
+
+  useEffect(() => {
+    if (previousRunning.current && !isRunning && secondsElapsed > 0) {
+      const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+      if (AudioContextClass) {
+        const context = new AudioContextClass();
+        const oscillator = context.createOscillator();
+        const gain = context.createGain();
+        oscillator.frequency.setValueAtTime(523.25, context.currentTime);
+        gain.gain.setValueAtTime(0.0001, context.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.12, context.currentTime + 0.02);
+        gain.gain.exponentialRampToValueAtTime(0.0001, context.currentTime + 0.35);
+        oscillator.connect(gain).connect(context.destination); oscillator.start(); oscillator.stop(context.currentTime + 0.36);
+      }
+    }
+    previousRunning.current = isRunning;
+  }, [isRunning, secondsElapsed]);
 
   function handleStartPause() {
     setIsRunning((prev) => !prev);
@@ -39,14 +58,18 @@ export default function Focus() {
 
   const displayMinutes = Math.floor(secondsElapsed / 60).toString().padStart(2, "0");
   const displaySeconds = (secondsElapsed % 60).toString().padStart(2, "0");
+  const totalSeconds = focusLength * 60;
+  const progress = Math.min(100, (secondsElapsed / totalSeconds) * 100);
 
   return (
     <section>
-      <h1 className="text-2xl font-display text-ink mb-6">Focus Timer</h1>
-      <Card accentColor="border-moss">
-        <p className="font-mono text-6xl text-ink text-center py-6 tracking-tight">
-          {displayMinutes}:{displaySeconds}
-        </p>
+      <h1 className="text-2xl font-display text-ink mb-2">Focus Timer</h1>
+      <p className="text-slate text-sm mb-4">Build a bright, uninterrupted study sprint.</p>
+      <Card title="Focus sprint" preview="Your session is logged when you stop it." accentColor="border-moss">
+        <div className="timer-orb" style={{ "--timer-progress": `${progress * 3.6}deg` }}>
+          <div className="timer-core"><span className="text-xs font-mono uppercase tracking-[.18em] text-violet-500">focus</span><p className="font-display text-5xl text-ink tracking-tight">{displayMinutes}:{displaySeconds}</p><span className="text-xs text-slate">of {focusLength} min</span></div>
+        </div>
+        <div className="flex justify-center gap-2 mb-5">{[25, 45, 60].map((length) => <button key={length} onClick={() => { setFocusLength(length); setSecondsElapsed(0); }} className={`px-3 py-1 rounded-full text-xs font-mono ${focusLength === length ? "bg-violet-600 text-white" : "bg-violet-100 text-violet-700"}`}>{length} min</button>)}</div>
         <div className="flex justify-center gap-3">
           <button
             onClick={handleStartPause}

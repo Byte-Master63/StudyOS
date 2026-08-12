@@ -15,6 +15,7 @@ import Modules from "./pages/Modules";
 import Analytics from "./pages/Analytics";
 import Focus from "./pages/Focus";
 import Settings from "./pages/Settings";
+import StudyAssistant from "./pages/StudyAssistant";
 
 const router = createBrowserRouter(
   [
@@ -35,6 +36,7 @@ const router = createBrowserRouter(
             { path: "analytics", element: <Analytics /> },
             { path: "focus", element: <Focus /> },
             { path: "settings", element: <Settings /> },
+            { path: "assistant", element: <StudyAssistant /> },
           ],
         },
       ],

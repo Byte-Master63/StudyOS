@@ -5,9 +5,17 @@ import Card from "../components/ui/Card";
 import AssessmentRow from "../components/assignments/AssessmentRow";
 
 export default function AssignmentTracker() {
-  const { assessments, updateMark, updateDueDate, toggleCancelled } =
+  const { assessments, modules, updateMark, updateDueDate, updateWeight, toggleCancelled, addAssessment, removeAssessment } =
     useOutletContext();
   const [filter, setFilter] = useState("all");
+  const [form, setForm] = useState({ moduleId: "", number: 1, type: "Assignment", dueDate: "", weight: "" });
+  const [error, setError] = useState("");
+
+  async function submit(event) {
+    event.preventDefault(); setError("");
+    try { await addAssessment(form); setForm({ ...form, number: Number(form.number) + 1, dueDate: "", weight: "" }); }
+    catch (err) { setError(err.message); }
+  }
 
   function matchesFilter(a) {
     if (filter === "all") return true;
@@ -23,13 +31,28 @@ export default function AssignmentTracker() {
     acc[a.module].push(a);
     return acc;
   }, {});
-  const modules = Object.keys(grouped).sort();
+  const moduleCodes = Object.keys(grouped).sort();
 
   const filters = ["all", "upcoming", "completed", "cancelled"];
 
   return (
     <section>
       <h1 className="text-2xl font-display text-ink mb-6">Assignment Tracker</h1>
+
+      <Card title="Schedule an assessment" preview="Add its share of your semester or year mark." accentColor="border-moss" collapsible>
+        <form onSubmit={submit} className="grid grid-cols-1 md:grid-cols-5 gap-3">
+          <select required value={form.moduleId} onChange={(e) => setForm({...form, moduleId:e.target.value})} className="input">
+            <option value="">Select module</option>{modules.map((m) => <option key={m.id} value={m.id}>{m.code} · {m.name}</option>)}
+          </select>
+          <select value={form.type} onChange={(e) => setForm({...form, type:e.target.value})} className="input"><option>Assignment</option><option>Project</option><option>Test</option><option>Examination</option></select>
+          <input type="number" min="1" required value={form.number} onChange={(e) => setForm({...form, number:e.target.value})} className="input" aria-label="Assessment number" />
+          <input type="date" required value={form.dueDate} onChange={(e) => setForm({...form, dueDate:e.target.value})} className="input" />
+          <label className="text-xs text-slate">Coursework weight (%)<input type="number" min="0" max="100" step="0.5" required value={form.weight} onChange={(e) => setForm({...form, weight:e.target.value})} className="w-full mt-1 input" /></label>
+          <button className="font-mono text-sm px-4 py-2 bg-moss text-paper rounded md:col-span-4 justify-self-start">Save assessment</button>
+        </form>
+        {modules.length === 0 && <p className="text-slate text-sm mt-2">Create a module first, then schedule its assignments, projects, tests, or exams.</p>}
+        {error && <p className="text-stamp text-sm mt-2">{error}</p>}
+      </Card>
 
       <div className="flex gap-2 mb-6">
         {filters.map((f) => (
@@ -47,10 +70,10 @@ export default function AssignmentTracker() {
         ))}
       </div>
 
-      {modules.length === 0 ? (
+      {moduleCodes.length === 0 ? (
         <p className="text-slate text-sm">No assessments match this filter.</p>
       ) : (
-        modules.map((module) => (
+        moduleCodes.map((module) => (
           <Card key={module} title={module} accentColor="border-ink">
             <ul>
               {grouped[module]
@@ -61,7 +84,9 @@ export default function AssignmentTracker() {
                     assessment={a}
                     onUpdateMark={updateMark}
                     onUpdateDueDate={updateDueDate}
+                    onUpdateWeight={updateWeight}
                     onToggleCancelled={toggleCancelled}
+                    onDelete={removeAssessment}
                   />
                 ))}
             </ul>

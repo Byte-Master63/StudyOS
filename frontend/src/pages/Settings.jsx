@@ -1,33 +1,21 @@
+import { useState } from "react";
+import { useAuth } from "../context/AuthContext";
+import { updateProfile, changePassword, logoutAllSessions } from "../api/profile";
 import Card from "../components/ui/Card";
 
 export default function Settings() {
-  function handleResetAllData() {
-    const confirmed = window.confirm(
-      "This will erase all tasks, assessment edits, and study sessions stored in this browser. Continue?"
-    );
-    if (confirmed) {
-      localStorage.removeItem("studyos_tasks");
-      localStorage.removeItem("studyos_assessments");
-      localStorage.removeItem("studyos_studySessions");
-      window.location.reload();
-    }
-  }
-
-  return (
-    <section>
-      <h1 className="text-2xl font-display text-ink mb-6">Settings</h1>
-      <Card title="Data" accentColor="border-stamp">
-        <p className="text-sm text-ink/80 mb-4">
-          StudyOS currently stores your data locally in this browser only —
-          it does not sync between devices yet.
-        </p>
-        <button
-          onClick={handleResetAllData}
-          className="font-mono text-sm px-4 py-2 rounded bg-stamp text-paper hover:opacity-90 transition-opacity"
-        >
-          Reset All Data
-        </button>
-      </Card>
-    </section>
-  );
+  const { user, updateUser, logout } = useAuth();
+  const [profile, setProfile] = useState({ username: user?.username || "", email: user?.email || "", fullName: user?.fullName || "", age: user?.age ?? "", birthDate: user?.birthDate || "", institution: user?.institution || "", country: user?.country || "", gender: user?.gender || "", ethnicity: user?.ethnicity || "", avatarData: user?.avatarData || "", bio: user?.bio || "", hobbies: user?.hobbies || "" });
+  const [password, setPassword] = useState({ currentPassword: "", newPassword: "", confirm: "" });
+  const [message, setMessage] = useState(""); const [error, setError] = useState("");
+  async function saveProfile(e) { e.preventDefault(); setError(""); try { const data = await updateProfile(profile); updateUser(data.user); setMessage("Profile saved."); } catch (err) { setError(err.message); } }
+  async function savePassword(e) { e.preventDefault(); setError(""); if (password.newPassword !== password.confirm) return setError("New passwords do not match."); try { await changePassword(password); setPassword({currentPassword:"",newPassword:"",confirm:""}); setMessage("Password updated."); } catch (err) { setError(err.message); } }
+  async function signOutEverywhere() { if (!window.confirm("Sign out of StudyOS on every device? You will need to log in again here too.")) return; setError(""); try { await logoutAllSessions(); await logout(); } catch (err) { setError(err.message); } }
+  function uploadAvatar(event) { const file = event.target.files?.[0]; if (!file) return; if (!/image\/(png|jpeg|webp)/.test(file.type) || file.size > 1024 * 1024) return setError("Choose a PNG, JPEG, or WebP image smaller than 1 MB."); const reader = new FileReader(); reader.onload = () => setProfile({ ...profile, avatarData: reader.result }); reader.readAsDataURL(file); }
+  return <section className="max-w-3xl"><h1 className="text-3xl font-display text-ink mb-2">Profile & settings</h1><p className="text-slate mb-6">Make StudyOS feel like your own.</p>
+    <Card title="About you" preview="Keep the basics in one place, ready for your student profile." accentColor="border-fuchsia-500"><form onSubmit={saveProfile} className="grid md:grid-cols-2 gap-4"><div className="md:col-span-2 flex items-center gap-4 rounded-2xl bg-violet-50 p-4"><div className="size-16 rounded-full overflow-hidden bg-violet-200 flex items-center justify-center font-display text-xl text-violet-700">{profile.avatarData ? <img src={profile.avatarData} alt="Profile" className="size-full object-cover" /> : (profile.fullName || profile.username || "S").slice(0, 1).toUpperCase()}</div><label className="text-sm font-medium">Profile picture <span className="block text-xs font-normal text-slate">PNG, JPEG or WebP · max 1 MB</span><input type="file" accept="image/png,image/jpeg,image/webp" onChange={uploadAvatar} className="mt-1 block text-xs" /></label></div><label>Full name<input className="input w-full mt-1" placeholder="First and last name" value={profile.fullName} onChange={e=>setProfile({...profile,fullName:e.target.value})}/></label><label>Username<input required className="input w-full mt-1" value={profile.username} onChange={e=>setProfile({...profile,username:e.target.value})}/></label><label>Email<input required type="email" className="input w-full mt-1" value={profile.email} onChange={e=>setProfile({...profile,email:e.target.value})}/></label><label>Birth date<input type="date" className="input w-full mt-1" value={profile.birthDate} onChange={e=>setProfile({...profile,birthDate:e.target.value})}/></label><label>Age<input type="number" min="1" max="130" className="input w-full mt-1" value={profile.age} onChange={e=>setProfile({...profile,age:e.target.value})}/></label><label>Institution<input className="input w-full mt-1" value={profile.institution} onChange={e=>setProfile({...profile,institution:e.target.value})}/></label><label>Country<input className="input w-full mt-1" value={profile.country} onChange={e=>setProfile({...profile,country:e.target.value})}/></label><label>Gender <span className="text-slate text-xs">(optional)</span><select className="input w-full mt-1" value={profile.gender} onChange={e=>setProfile({...profile,gender:e.target.value})}><option value="">Prefer not to say</option><option>Woman</option><option>Man</option><option>Non-binary</option><option>Another identity</option></select></label><label>Ethnicity <span className="text-slate text-xs">(optional)</span><input className="input w-full mt-1" value={profile.ethnicity} onChange={e=>setProfile({...profile,ethnicity:e.target.value})}/></label><label className="md:col-span-2">Bio<textarea className="input w-full mt-1" rows="3" placeholder="Your course, goals, or a little about you" value={profile.bio} onChange={e=>setProfile({...profile,bio:e.target.value})}/></label><label className="md:col-span-2">Hobbies & interests<input className="input w-full mt-1" placeholder="e.g. football, music, coding" value={profile.hobbies} onChange={e=>setProfile({...profile,hobbies:e.target.value})}/></label><button className="rounded-lg bg-fuchsia-600 text-white px-4 py-2 justify-self-start font-mono text-sm">Save profile</button></form></Card>
+    <Card title="Change password" accentColor="border-violet-500"><form onSubmit={savePassword} className="grid gap-3"><input required type="password" className="input" placeholder="Current password" value={password.currentPassword} onChange={e=>setPassword({...password,currentPassword:e.target.value})}/><input required type="password" minLength="8" className="input" placeholder="New password (8+ chars, upper/lowercase, number, symbol)" value={password.newPassword} onChange={e=>setPassword({...password,newPassword:e.target.value})}/><input required type="password" className="input" placeholder="Confirm new password" value={password.confirm} onChange={e=>setPassword({...password,confirm:e.target.value})}/><button className="rounded-lg bg-violet-600 text-white px-4 py-2 justify-self-start font-mono text-sm">Update password</button></form></Card>
+    <Card title="Security & sessions" preview="Your access token refreshes automatically; password updates end other sessions." accentColor="border-cyan-500" collapsible><div className="rounded-2xl bg-cyan-50 p-4"><p className="font-medium text-ink">Control every signed-in device</p><p className="text-xs text-slate mt-1">Use this if a device is lost, shared, or you simply want a clean reset.</p><button onClick={signOutEverywhere} className="mt-3 rounded-lg bg-ink text-white px-4 py-2 font-mono text-xs hover:bg-violet-800">Sign out everywhere</button></div></Card>
+    {error && <p className="text-stamp text-sm">{error}</p>}{message && <p className="text-moss text-sm">{message}</p>}
+  </section>;
 }

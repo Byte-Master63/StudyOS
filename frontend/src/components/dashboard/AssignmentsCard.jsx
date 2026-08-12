@@ -5,6 +5,7 @@ export default function AssignmentsCard({
   assessments,
   onUpdateMark,
   onUpdateDueDate,
+  onUpdateWeight,
   onToggleCancelled,
 }) {
   const today = new Date();
@@ -14,6 +15,11 @@ export default function AssignmentsCard({
     .sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate))
     .slice(0, 5);
 
+  function alertLabel(dueDate) {
+    const days = Math.ceil((new Date(`${dueDate}T00:00:00`) - new Date(today.toDateString())) / 86400000);
+    return days === 0 ? "Due today" : days === 1 ? "Due tomorrow" : `${days} days left`;
+  }
+
   return (
     <Card title="Upcoming Assignments" accentColor="border-stamp">
       {upcoming.length === 0 ? (
@@ -21,13 +27,7 @@ export default function AssignmentsCard({
       ) : (
         <ul>
           {upcoming.map((a) => (
-            <AssessmentRow
-              key={a.id}
-              assessment={a}
-              onUpdateMark={onUpdateMark}
-              onUpdateDueDate={onUpdateDueDate}
-              onToggleCancelled={onToggleCancelled}
-            />
+            <AssessmentRow key={a.id} assessment={a} onUpdateMark={onUpdateMark} onUpdateDueDate={onUpdateDueDate} onUpdateWeight={onUpdateWeight} onToggleCancelled={onToggleCancelled} alertText={alertLabel(a.dueDate)} />
           ))}
         </ul>
       )}

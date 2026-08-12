@@ -14,9 +14,13 @@ export default function Dashboard() {
     assessments,
     studySessions,
     toggleTask,
+    addTask,
+    removeTask,
     updateMark,
     updateDueDate,
+    updateWeight,
     toggleCancelled,
+    loginStamp,
   } = useOutletContext();
 
   return (
@@ -25,15 +29,16 @@ export default function Dashboard() {
         <WelcomeCard />
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <TasksCard tasks={tasks} onToggleTask={toggleTask} />
+        <TasksCard tasks={tasks} onToggleTask={toggleTask} onAddTask={addTask} onRemoveTask={removeTask} />
         <AssignmentsCard
           assessments={assessments}
           onUpdateMark={updateMark}
           onUpdateDueDate={updateDueDate}
+          onUpdateWeight={updateWeight}
           onToggleCancelled={toggleCancelled}
         />
         <ProgressCard tasks={tasks} />
-        <QuoteCard />
+        <QuoteCard key={loginStamp} />
         <CalendarCard assessments={assessments} />
         <StudyHoursCard studySessions={studySessions} />
       </div>

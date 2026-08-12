@@ -2,19 +2,20 @@ import { NavLink } from "react-router-dom";
 
 function Sidebar({ user, onLogout }) {
   const menuItems = [
-    { label: "Dashboard", path: "/" },
-    { label: "Calendar", path: "/calendar" },
-    { label: "Assignment Tracker", path: "/assignments" },
-    { label: "Modules", path: "/modules" },
-    { label: "Analytics", path: "/analytics" },
-    { label: "Focus", path: "/focus" },
-    { label: "Settings", path: "/settings" },
+    { label: "Dashboard", path: "/", icon: "⌂" },
+    { label: "Calendar", path: "/calendar", icon: "◫" },
+    { label: "Assignments", path: "/assignments", icon: "✓" },
+    { label: "Modules", path: "/modules", icon: "◈" },
+    { label: "Analytics", path: "/analytics", icon: "↗" },
+    { label: "Focus", path: "/focus", icon: "◷" },
+    { label: "Study Assistant", path: "/assistant", icon: "✦" },
+    { label: "Settings", path: "/settings", icon: "⚙" },
   ];
 
   return (
-    <aside className="w-56 min-h-screen bg-ink text-paper flex flex-col shrink-0">
-      <header className="px-5 py-6 border-b border-paper/10">
-        <h2 className="font-display text-xl tracking-tight">StudyOS</h2>
+    <aside className="hidden md:flex w-60 min-h-screen bg-gradient-to-b from-indigo-950 via-violet-900 to-fuchsia-800 text-paper flex-col shrink-0 shadow-xl">
+      <header className="px-5 py-6 border-b border-paper/15">
+        <h2 className="font-display text-2xl tracking-tight">StudyOS <span className="text-mustard">✦</span></h2>
         {user && (
           <p className="text-xs font-mono text-paper/60 mt-1">{user.username}</p>
         )}
@@ -29,12 +30,12 @@ function Sidebar({ user, onLogout }) {
                 className={({ isActive }) =>
                   `block px-5 py-2.5 font-mono text-sm border-l-4 transition-colors ${
                     isActive
-                      ? "border-stamp bg-paper/5 text-paper"
-                      : "border-transparent text-paper/60 hover:text-paper hover:bg-paper/5"
+                      ? "border-mustard bg-white/15 text-paper"
+                      : "border-transparent text-paper/75 hover:text-paper hover:bg-white/10"
                   }`
                 }
               >
-                {item.label}
+                <span className="inline-block w-6 text-mustard">{item.icon}</span>{item.label}
               </NavLink>
             </li>
           ))}
