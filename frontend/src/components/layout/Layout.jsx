@@ -91,8 +91,10 @@ export default function Layout() {
   }
 
   async function addModule(data) {
-    const item = await apiCreateModule(data);
-    setModules((prev) => [...prev, item]);
+    const result = await apiCreateModule(data);
+    setModules((prev) => [...prev, result.module]);
+    if (result.assessments.length) setAssessments((prev) => [...prev, ...result.assessments]);
+    return result;
   }
   async function removeModule(id) {
     await apiDeleteModule(id);
