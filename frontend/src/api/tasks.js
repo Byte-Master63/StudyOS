@@ -11,3 +11,7 @@ export function createTask(token, title) {
 export function updateTask(token, id, updates) {
   return request(`/api/tasks/${id}`, { method: "PATCH", token, body: updates });
 }
+
+export function deleteTask(token, id) {
+  return request(`/api/tasks/${id}`, { method: "DELETE", token });
+}

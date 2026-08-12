@@ -1,15 +1,24 @@
-import request from "./client";
+import { getSupabase } from "./supabase";
 
-export function signup({ username, email, password }) {
-  return request("/auth/signup", {
-    method: "POST",
-    body: { username, email, password },
+export function signup(profile) {
+  const { email, password, ...metadata } = profile;
+  return getSupabase().auth.signUp({
+    email,
+    password,
+    options: { data: metadata },
   });
 }
 
 export function login({ email, password }) {
-  return request("/auth/login", {
-    method: "POST",
-    body: { email, password },
+  return getSupabase().auth.signInWithPassword({
+    email,
+    password,
+  });
+}
+
+export function loginWithGoogle() {
+  return getSupabase().auth.signInWithOAuth({
+    provider: "google",
+    options: { redirectTo: `${window.location.origin}${import.meta.env.BASE_URL}` },
   });
 }
