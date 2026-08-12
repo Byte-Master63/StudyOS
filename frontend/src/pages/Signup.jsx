@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { getUniversities } from "../api/universities";
 
 const initialProfile = { fullName: "", age: "", institution: "", country: "", username: "", email: "", password: "", confirmPassword: "", gender: "", ethnicity: "" };
 
@@ -16,8 +17,15 @@ export default function Signup() {
   const { signup, loading, error } = useAuth();
   const navigate = useNavigate();
   const [profile, setProfile] = useState(initialProfile);
+  const [universities, setUniversities] = useState([]);
   const [formError, setFormError] = useState("");
   const update = (field) => (event) => setProfile({ ...profile, [field]: event.target.value });
+
+  useEffect(() => {
+    getUniversities().then(setUniversities).catch(() => {
+      // The existing free-text field remains usable if the directory is unavailable.
+    });
+  }, []);
 
   async function handleSubmit(event) {
     event.preventDefault();
@@ -47,7 +55,7 @@ export default function Signup() {
       <fieldset className="grid md:grid-cols-2 gap-4"><legend className="sr-only">Account profile</legend>
         <Field label="Full name" required><input required value={profile.fullName} onChange={update("fullName")} className="input w-full" autoComplete="name" /></Field>
         <Field label="Age" required><input required type="number" min="1" max="130" value={profile.age} onChange={update("age")} className="input w-full" autoComplete="age" /></Field>
-        <Field label="Institution" required><input required value={profile.institution} onChange={update("institution")} placeholder="e.g. University of South Africa" className="input w-full" autoComplete="organization" /></Field>
+        <Field label="Institution" required><input required list="university-directory" value={profile.institution} onChange={update("institution")} placeholder="e.g. University of South Africa" className="input w-full" autoComplete="organization" /><UniversityOptions universities={universities} /></Field>
         <Field label="Country" required><input required value={profile.country} onChange={update("country")} placeholder="e.g. South Africa" className="input w-full" autoComplete="country-name" /></Field>
         <Field label="Username" required><input required value={profile.username} onChange={update("username")} className="input w-full" autoComplete="username" /></Field>
         <Field label="Email" required><input required type="email" value={profile.email} onChange={update("email")} className="input w-full" autoComplete="email" /></Field>
@@ -65,6 +73,10 @@ export default function Signup() {
 
 function Field({ label, required, optional, children }) {
   return <label className="block text-sm font-medium text-ink/80">{label} {required && <span className="text-fuchsia-600">*</span>}{optional && <span className="font-normal text-slate">(optional)</span>}<span className="block mt-1">{children}</span></label>;
+}
+
+function UniversityOptions({ universities }) {
+  return <datalist id="university-directory">{universities.map((university) => <option key={university.id} value={university.name} />)}</datalist>;
 }
 
 function PasswordStrength({ value }) {
