@@ -1,0 +1,7 @@
+import Card from "../components/ui/Card";
+
+export default function StudyAssistant() {
+  return <section className="max-w-4xl"><p className="font-mono text-xs uppercase tracking-[.18em] text-fuchsia-600">Coming soon</p><h1 className="text-3xl font-display text-ink mt-2">Your Study Assistant ✦</h1><p className="text-slate mt-2 mb-6">A focused space for turning your material into an achievable study plan.</p><Card title="Built around your real coursework" preview="This feature is in development — your existing modules and deadlines will be its starting point." accentColor="border-violet-500"><div className="grid md:grid-cols-3 gap-3"><Feature icon="↥" title="Add study material" text="Bring notes, outlines, and course resources together." /><Feature icon="◎" title="Plan your week" text="Turn assessment dates into manageable study sessions." /><Feature icon="✓" title="Hit daily targets" text="See small, practical next steps for each module." /></div><div className="mt-5 rounded-2xl bg-violet-50 p-4 text-sm text-violet-800">We’re designing this carefully. For now, use your modules, assignment tracker, and focus sprints to keep momentum.</div></Card></section>;
+}
+
+function Feature({ icon, title, text }) { return <div className="rounded-2xl bg-white border border-violet-100 p-4"><span className="text-xl text-violet-600">{icon}</span><h2 className="font-display mt-2 text-ink">{title}</h2><p className="text-xs text-slate mt-1">{text}</p></div>; }
