@@ -37,13 +37,44 @@ export function AuthProvider({ children }) {
       }
     }
 
-    supabase.auth.getSession().then(async ({ data, error: sessionError }) => {
-      if (sessionError && active) setError(sessionError.message);
-      await setSessionAndProfile(data.session);
-      if (active) setInitializing(false);
-    });
+    async function initializeSession() {
+      try {
+        const { data, error: sessionError } = await supabase.auth.getSession();
+        if (!active) return;
 
-    const { data: subscription } = supabase.auth.onAuthStateChange((_event, nextSession) => {
+        if (sessionError) {
+          setError(sessionError.message);
+          await setSessionAndProfile(null);
+        } else if (data.session) {
+          // A persisted access JWT may have expired while the app was closed.
+          // Refresh before any profile or dashboard REST request uses that token.
+          const { data: refreshed, error: refreshError } = await supabase.auth.refreshSession();
+          if (refreshError || !refreshed.session) {
+            await supabase.auth.signOut({ scope: "local" });
+            if (active) setError("Your session has expired. Please log in again.");
+            await setSessionAndProfile(null);
+          } else {
+            await setSessionAndProfile(refreshed.session);
+          }
+        } else {
+          await setSessionAndProfile(null);
+        }
+      } catch (sessionError) {
+        if (active) {
+          setError(sessionError.message || "Unable to restore your session. Please log in again.");
+          await setSessionAndProfile(null);
+        }
+      } finally {
+        if (active) setInitializing(false);
+      }
+    }
+
+    initializeSession();
+
+    const { data: subscription } = supabase.auth.onAuthStateChange((event, nextSession) => {
+      // initializeSession owns the first session read, avoiding a stale INITIAL_SESSION
+      // event racing the explicit refresh above.
+      if (event === "INITIAL_SESSION") return;
       setSessionAndProfile(nextSession);
       if (nextSession) setLoginStamp(Date.now());
     });

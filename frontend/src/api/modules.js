@@ -10,6 +10,18 @@ const fromRow = (row) => ({
   examEntranceMark: Number(row.exam_entrance_mark),
 });
 
+const fromSharedAssessment = (row, moduleCode) => ({
+  id: row.id,
+  moduleId: row.module_id,
+  module: moduleCode,
+  number: row.assessment_number,
+  type: row.type,
+  dueDate: row.due_date,
+  mark: row.mark === null ? null : Number(row.mark),
+  weight: Number(row.weight),
+  status: row.status,
+});
+
 const toRow = (data) => ({
   code: data.code.trim(),
   name: data.name.trim(),
@@ -26,9 +38,23 @@ export async function getModules() {
 }
 
 export async function createModule(data) {
+  if (data.sharedModuleId) {
+    const { data: result, error } = await getSupabase().rpc("create_module_from_shared_config", {
+      p_shared_module_id: data.sharedModuleId,
+      p_academic_year: Number(data.academicYear),
+    });
+    if (error) throw error;
+    const module = fromRow(result.module);
+    return {
+      module,
+      assessments: result.assignments.map((assessment) => fromSharedAssessment(assessment, module.code)),
+      usedSharedConfiguration: true,
+    };
+  }
+
   const { data: row, error } = await getSupabase().from("modules").insert(toRow(data)).select().single();
   if (error) throw error;
-  return fromRow(row);
+  return { module: fromRow(row), assessments: [], usedSharedConfiguration: false };
 }
 
 export async function updateModule(id, data) {
