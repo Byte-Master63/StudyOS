@@ -43,7 +43,7 @@ const router = createBrowserRouter(
     },
   ],
   {
-    basename: "/StudyOS/",
+    basename: import.meta.env.VITE_BASE_PATH || "/",
   }
 );
 
